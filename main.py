@@ -1,6 +1,6 @@
 from tkinter import *
 
-PIXEL_SIZE = 30
+PIXEL_SIZE = 10
 
 status = "draw"
 colors = ["black", "white", "purple", "green", "blue", "red", "cyan"]
@@ -9,6 +9,10 @@ current_color = "black"
 def clear_mode():
     global status
     status = "clear"
+
+def clear_screen():
+    for pixel in elements:
+        work_area.delete(elements[pixel])
     
 def change_color(color):
     global current_color, status
@@ -41,6 +45,9 @@ work_area.pack(fill="both", side = "top", expand=1)
 
 clear_button = Button(instruments_panel, height = 1, width = 1, text = "X", bg="white", activebackground="white", command = clear_mode)
 clear_button.pack(side = "left", padx = 5)
+
+clear_screen_button = Button(instruments_panel, height = 1, width = 8, text = "Очистить", bg="white", activebackground="white", command = clear_screen)
+clear_screen_button.pack(side = "right", padx = 5)
 
 elements = {}
 def set_point(event):
