@@ -18,7 +18,6 @@ def change_color(color):
 def pixel_click(event, id):
     if status == "clear":
         work_area.delete(id)
-        del elements[elements.index(id)]
 
 root =  Tk()
 root.title("PixelArt")
@@ -43,16 +42,29 @@ work_area.pack(fill="both", side = "top", expand=1)
 clear_button = Button(instruments_panel, height = 1, width = 1, text = "X", bg="white", activebackground="white", command = clear_mode)
 clear_button.pack(side = "left", padx = 5)
 
-elements = []
+elements = {}
 def set_point(event):
     if status == "draw":
         x = (event.x)//PIXEL_SIZE*PIXEL_SIZE
         y = event.y//PIXEL_SIZE*PIXEL_SIZE
+        if (x, y) in elements:
+            work_area.delete(elements[(x, y)])
         id = work_area.create_rectangle((x, y, x+PIXEL_SIZE, y+PIXEL_SIZE), fill=current_color)
         work_area.tag_bind(id, "<Button-1>", lambda event: pixel_click(event, id))
-        elements.append(id)
+        elements[(x, y)] = id
 
+def big_draw(event):
+    x = (event.x)//PIXEL_SIZE*PIXEL_SIZE
+    y = event.y//PIXEL_SIZE*PIXEL_SIZE
+    if status == "draw":
+        set_point(event)
+    
+    elif status == "clear":
+        if (x, y) in elements:
+            pixel_click(event, elements[(x, y)])
+            
+
+work_area.bind("<B1-Motion>", big_draw)
 work_area.bind("<Button-1>", set_point)
-#work_area.bind("<Button-3>", change_color)
 
 root.mainloop()
